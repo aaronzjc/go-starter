@@ -10,10 +10,11 @@ import (
 )
 
 type Config struct {
-	Debug    bool         `yaml:"debug"`
-	LogFile  string       `yaml:"logfile"`
-	Port     string       `yaml:"port"`
-	Database *db.DbConfig `yaml:"database"`
+	Name     string                  `yaml:"name"`
+	Debug    bool                    `yaml:"debug"`
+	LogFile  string                  `yaml:"logFile"`
+	Addr     string                  `yaml:"addr"`
+	Database map[string]*db.DbConfig `yaml:"database"`
 }
 
 var vip *viper.Viper

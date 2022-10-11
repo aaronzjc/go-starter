@@ -23,7 +23,7 @@ import (
 func setup(conf *config.Config) error {
 	var err error
 	// 初始化日志组件
-	err = logger.Setup(conf.LogFile)
+	err = logger.Setup(conf.Name, conf.LogFile)
 	if err != nil {
 		return err
 	}
@@ -68,11 +68,13 @@ func RunApi(ctx *cli.Context) error {
 	app := gin.New()
 	route.Setup(app)
 	server := &http.Server{
-		Addr:    conf.Port,
-		Handler: app,
+		Addr:         conf.Addr,
+		Handler:      app,
+		ReadTimeout:  time.Second * 5,
+		WriteTimeout: time.Second * 10,
 	}
 	go server.ListenAndServe()
-	logrus.Info("[START] server listen at ", conf.Port)
+	logrus.Info("[START] server listen at ", conf.Addr)
 
 	// 监听关闭信号
 	sig := make(chan os.Signal, 1)

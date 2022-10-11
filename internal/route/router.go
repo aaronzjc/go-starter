@@ -11,4 +11,7 @@ func Setup(app *gin.Engine) {
 
 	test := new(handler.Test)
 	app.GET("/hello", test.Get)
+
+	user := new(handler.User)
+	app.GET("/user/list", user.List)
 }

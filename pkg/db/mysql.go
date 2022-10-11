@@ -6,7 +6,6 @@ import (
 	"sync"
 
 	"gorm.io/driver/mysql"
-
 	"gorm.io/gorm"
 )
 
@@ -15,7 +14,6 @@ type DbConfig struct {
 	Port     int    `yaml:"port"`
 	Username string `yaml:"username"`
 	Password string `yaml:"password"`
-	Dbname   string `yaml:"dbname"`
 	Charset  string `yaml:"charset"`
 }
 
@@ -32,24 +30,26 @@ func init() {
 	}
 }
 
-func Setup(conf *DbConfig, config *gorm.Config) error {
+func Setup(conf map[string]*DbConfig, config *gorm.Config) error {
 	defer func() {
 		if err := recover(); err != nil {
 			fmt.Println(err)
 		}
 	}()
 	var err error
-	// 初始化DB等
-	dsn := fmt.Sprintf("%s:%s@tcp(%s:%d)/%s?charset=%s",
-		conf.Username,
-		conf.Password,
-		conf.Host,
-		conf.Port,
-		conf.Dbname,
-		conf.Charset,
-	)
-	if pool.dbMap[conf.Dbname], err = gorm.Open(mysql.Open(dsn), config); err != nil {
-		return err
+	for dbname, v := range conf {
+		// 初始化DB等
+		dsn := fmt.Sprintf("%s:%s@tcp(%s:%d)/%s?charset=%s&parseTime=True",
+			v.Username,
+			v.Password,
+			v.Host,
+			v.Port,
+			dbname,
+			v.Charset,
+		)
+		if pool.dbMap[dbname], err = gorm.Open(mysql.Open(dsn), config); err != nil {
+			return err
+		}
 	}
 	return nil
 }
