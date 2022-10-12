@@ -12,15 +12,19 @@ type AppLogger struct {
 	logger *logrus.Logger
 }
 
-func (l *AppLogger) Info(msg string) {
-	l.logger.WithField("log_type", "common").Info(msg)
+func (l *AppLogger) SetLevel(level logrus.Level) {
+	l.logger.SetLevel(level)
 }
 
-func (l *AppLogger) Error(msg string, stack []byte) {
+func (l *AppLogger) Info(args ...interface{}) {
+	l.logger.WithField("log_type", "common").Info(args)
+}
+
+func (l *AppLogger) Error(stack []byte, args ...interface{}) {
 	l.logger.WithFields(logrus.Fields{
 		"log_type": "common",
 		"stack":    string(stack),
-	}).Error(msg)
+	}).Error(args)
 }
 
 func (l *AppLogger) LogReq(req *http.Request, resp *http.Response, ts float64, err error) {

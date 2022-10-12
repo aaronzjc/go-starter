@@ -9,8 +9,6 @@ import (
 	"net/http"
 	"strconv"
 	"time"
-
-	"github.com/sirupsen/logrus"
 )
 
 type HttpClient struct {
@@ -63,7 +61,6 @@ func (c *HttpClient) Do(ctx context.Context, method string, url string, params m
 func (c *HttpClient) Get(ctx context.Context, url string, params map[string]interface{}) (string, error) {
 	resp, err := c.Do(ctx, "GET", url, params, nil, nil)
 	if err != nil {
-		logrus.Error("[req error]")
 		return "", err
 	}
 	body, err := io.ReadAll(resp.Body)

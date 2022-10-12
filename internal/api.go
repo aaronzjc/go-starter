@@ -36,7 +36,7 @@ func setup(conf *config.Config) error {
 
 	// 设置调试模式
 	if conf.Debug {
-		logrus.SetLevel(logrus.DebugLevel)
+		logger.GetLog().SetLevel(logrus.DebugLevel)
 		gin.SetMode(gin.DebugMode)
 	}
 	return nil
@@ -74,7 +74,7 @@ func RunApi(ctx *cli.Context) error {
 		WriteTimeout: time.Second * 10,
 	}
 	go server.ListenAndServe()
-	logrus.Info("[START] server listen at ", conf.Addr)
+	logger.GetLog().Info("[START] server listen at ", conf.Addr)
 
 	// 监听关闭信号
 	sig := make(chan os.Signal, 1)
@@ -85,9 +85,9 @@ func RunApi(ctx *cli.Context) error {
 	ctxTimeout, cancel := context.WithTimeout(context.Background(), time.Second*10)
 	defer cancel()
 	if err := server.Shutdown(ctxTimeout); err != nil {
-		logrus.Error("[STOP] server shutdown error", err)
+		logger.GetLog().Error(nil, "[STOP] server shutdown error", err)
 		return err
 	}
-	logrus.Info("[STOP] server shutdown ok")
+	logger.GetLog().Info("[STOP] server shutdown ok")
 	return nil
 }
