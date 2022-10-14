@@ -1,7 +1,10 @@
 name: api
-debug: true
-logFile: ""
-addr: "127.0.0.1:8780"
+env: dev
+host: 127.0.0.1
+port: 8780
+log:
+  level: debug
+  file: ""
 database:
   demo:
     host: "127.0.0.1"

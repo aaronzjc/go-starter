@@ -13,11 +13,12 @@ func (h *User) List(ctx *gin.Context) {
 	userList, err := service.GetUserList()
 
 	if err != nil {
-		resp(ctx, constant.ERR_FAILED, constant.ERR_MSG_USERLIST, nil)
+		resp(ctx, &RespData{Errno: constant.ERR_FAILED, ErrMsg: constant.ERR_MSG_USERLIST})
 		return
 	}
 
-	resp(ctx, constant.ERR_OK, "", map[string]interface{}{
-		"list": userList,
+	resp(ctx, &RespData{
+		Errno: constant.ERR_OK,
+		Data:  map[string]interface{}{"list": userList},
 	})
 }

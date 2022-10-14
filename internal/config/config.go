@@ -2,24 +2,43 @@ package config
 
 import (
 	"errors"
-	"go-starter/pkg/db"
+	"fmt"
 
 	"github.com/fsnotify/fsnotify"
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/viper"
 )
 
-type Config struct {
-	Name     string                  `yaml:"name"`
-	Debug    bool                    `yaml:"debug"`
-	LogFile  string                  `yaml:"logFile"`
-	Addr     string                  `yaml:"addr"`
-	Database map[string]*db.DbConfig `yaml:"database"`
+type LogConfig struct {
+	Level string `yaml:"level"`
+	File  string `yaml:"file"`
 }
 
-var vip *viper.Viper
+type DbConfig struct {
+	Host     string `yaml:"host"`
+	Port     int    `yaml:"port"`
+	Username string `yaml:"username"`
+	Password string `yaml:"password"`
+	Charset  string `yaml:"charset"`
+}
 
-var config Config
+type Config struct {
+	Name     string              `yaml:"name"`
+	Env      string              `yaml:"env"`
+	Log      LogConfig           `yaml:"logFile"`
+	Host     string              `yaml:"host"`
+	Port     int                 `yaml:"port"`
+	Database map[string]DbConfig `yaml:"database"`
+}
+
+func (c *Config) GetAddr() string {
+	return fmt.Sprintf("%s:%d", config.Host, config.Port)
+}
+
+var (
+	vip    *viper.Viper
+	config Config
+)
 
 func init() {
 	vip = viper.New()

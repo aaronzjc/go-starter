@@ -28,7 +28,7 @@ func SetupCli(ctx *cli.Context) error {
 	}
 
 	// 初始化日志组件
-	err = logger.Setup(conf.Name, conf.LogFile)
+	err = logger.Setup(conf.Name, conf.Log.File)
 	if err != nil {
 		return err
 	}

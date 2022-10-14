@@ -1,0 +1,5 @@
+version: '3'
+
+tasks:
+  build:dev:
+    - go build -o ./bin/api.exe ./cmd/api/main.go

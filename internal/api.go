@@ -5,8 +5,8 @@ import (
 	"errors"
 	"fmt"
 	"go-starter/internal/config"
+	"go-starter/internal/db"
 	"go-starter/internal/route"
-	"go-starter/pkg/db"
 	"go-starter/pkg/logger"
 	"net/http"
 	"os"
@@ -15,7 +15,6 @@ import (
 	"time"
 
 	"github.com/gin-gonic/gin"
-	"github.com/sirupsen/logrus"
 	"github.com/urfave/cli"
 	"gorm.io/gorm"
 )
@@ -23,20 +22,20 @@ import (
 func setup(conf *config.Config) error {
 	var err error
 	// 初始化日志组件
-	err = logger.Setup(conf.Name, conf.LogFile)
+	err = logger.Setup(conf.Name, conf.Log.File)
 	if err != nil {
 		return err
 	}
 
 	// 初始化DB等
-	err = db.Setup(conf.Database, &gorm.Config{})
+	err = db.Setup(conf, &gorm.Config{})
 	if err != nil {
 		return err
 	}
 
 	// 设置调试模式
-	if conf.Debug {
-		logger.GetLog().SetLevel(logrus.DebugLevel)
+	if conf.Env != "prod" {
+		logger.SetLevel(conf.Log.Level)
 		gin.SetMode(gin.DebugMode)
 	}
 	return nil
@@ -68,13 +67,13 @@ func RunApi(ctx *cli.Context) error {
 	app := gin.New()
 	route.Setup(app)
 	server := &http.Server{
-		Addr:         conf.Addr,
+		Addr:         conf.GetAddr(),
 		Handler:      app,
 		ReadTimeout:  time.Second * 5,
 		WriteTimeout: time.Second * 10,
 	}
 	go server.ListenAndServe()
-	logger.GetLog().Info("[START] server listen at ", conf.Addr)
+	logger.Info("[START] server listen at ", conf.GetAddr())
 
 	// 监听关闭信号
 	sig := make(chan os.Signal, 1)
@@ -85,9 +84,9 @@ func RunApi(ctx *cli.Context) error {
 	ctxTimeout, cancel := context.WithTimeout(context.Background(), time.Second*10)
 	defer cancel()
 	if err := server.Shutdown(ctxTimeout); err != nil {
-		logger.GetLog().Error(nil, "[STOP] server shutdown error", err)
+		logger.Error("[STOP] server shutdown error", err)
 		return err
 	}
-	logger.GetLog().Info("[STOP] server shutdown ok")
+	logger.Info("[STOP] server shutdown ok")
 	return nil
 }

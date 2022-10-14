@@ -3,19 +3,12 @@ package db
 import (
 	"errors"
 	"fmt"
+	"go-starter/internal/config"
 	"sync"
 
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 )
-
-type DbConfig struct {
-	Host     string `yaml:"host"`
-	Port     int    `yaml:"port"`
-	Username string `yaml:"username"`
-	Password string `yaml:"password"`
-	Charset  string `yaml:"charset"`
-}
 
 type DBPool struct {
 	dbMap map[string]*gorm.DB
@@ -30,14 +23,14 @@ func init() {
 	}
 }
 
-func Setup(conf map[string]*DbConfig, config *gorm.Config) error {
+func Setup(conf *config.Config, config *gorm.Config) error {
 	defer func() {
 		if err := recover(); err != nil {
 			fmt.Println(err)
 		}
 	}()
 	var err error
-	for dbname, v := range conf {
+	for dbname, v := range conf.Database {
 		// 初始化DB等
 		dsn := fmt.Sprintf("%s:%s@tcp(%s:%d)/%s?charset=%s&parseTime=True",
 			v.Username,

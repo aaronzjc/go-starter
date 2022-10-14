@@ -4,30 +4,49 @@ import (
 	"go-starter/pkg/helper"
 	"net/http"
 	"os"
+	"runtime"
 
 	"github.com/sirupsen/logrus"
+)
+
+const (
+	TYPE_COMMON = "common"
+	TYPE_REQ    = "request"
 )
 
 type AppLogger struct {
 	logger *logrus.Logger
 }
 
-func (l *AppLogger) SetLevel(level logrus.Level) {
-	l.logger.SetLevel(level)
+var appLogger *AppLogger
+
+func SetLevel(l string) {
+	level, _ := logrus.ParseLevel(l)
+	appLogger.logger.SetLevel(level)
 }
 
-func (l *AppLogger) Info(args ...interface{}) {
-	l.logger.WithField("log_type", "common").Info(args)
+func Info(args ...interface{}) {
+	appLogger.logger.WithFields(logrus.Fields{
+		"log_type": TYPE_COMMON,
+	}).Info(args)
 }
 
-func (l *AppLogger) Error(stack []byte, args ...interface{}) {
-	l.logger.WithFields(logrus.Fields{
-		"log_type": "common",
+func Error(args ...interface{}) {
+	appLogger.logger.WithFields(logrus.Fields{
+		"log_type": TYPE_COMMON,
+	}).Error(args)
+}
+
+func ErrorWithStack(args ...interface{}) {
+	stack := make([]byte, 2048)
+	stack = stack[:runtime.Stack(stack, true)]
+	appLogger.logger.WithFields(logrus.Fields{
+		"log_type": TYPE_COMMON,
 		"stack":    string(stack),
 	}).Error(args)
 }
 
-func (l *AppLogger) LogReq(req *http.Request, resp *http.Response, ts float64, err error) {
+func Request(req *http.Request, resp *http.Response, ts float64, err error) {
 	fields := logrus.Fields{
 		"log_type": "request",
 		"consume":  ts,
@@ -42,13 +61,11 @@ func (l *AppLogger) LogReq(req *http.Request, resp *http.Response, ts float64, e
 	}
 	if err != nil {
 		fields["err"] = err.Error()
-		l.logger.WithFields(fields).Error()
+		appLogger.logger.WithFields(fields).Error()
 	} else {
-		l.logger.WithFields(fields).Info()
+		appLogger.logger.WithFields(fields).Info()
 	}
 }
-
-var appLogger *AppLogger
 
 func init() {
 	appLogger = &AppLogger{
@@ -56,7 +73,7 @@ func init() {
 	}
 }
 
-func Setup(appId string, path string) error {
+func Setup(appName string, path string) error {
 	appLogger.logger.SetFormatter(&logrus.JSONFormatter{})
 	appLogger.logger.SetOutput(os.Stdout)
 	if path == "" {
@@ -68,13 +85,9 @@ func Setup(appId string, path string) error {
 	}
 	appLogger.logger.SetOutput(f)
 	appLogger.logger.WithFields(logrus.Fields{
-		"app_id":   appId,
+		"app_name": appName,
 		"hostname": helper.LocalHostname(),
 		"ip":       helper.LocalAddr(),
 	})
 	return nil
-}
-
-func GetLog() *AppLogger {
-	return appLogger
 }

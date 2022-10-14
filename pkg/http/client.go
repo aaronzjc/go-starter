@@ -49,7 +49,7 @@ func (c *HttpClient) Do(ctx context.Context, method string, url string, params m
 	start := time.Now().UnixMilli()
 	resp, err = c.client.Do(req)
 	ts, _ := strconv.ParseFloat(fmt.Sprintf("%.3f", (float64)(time.Now().UnixMilli()-start)/1000), 64)
-	logger.GetLog().LogReq(req, resp, ts, err)
+	logger.Request(req, resp, ts, err)
 	if err != nil {
 		return nil, err
 	}

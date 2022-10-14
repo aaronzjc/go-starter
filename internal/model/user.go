@@ -1,15 +1,14 @@
 package model
 
 import (
-	"go-starter/pkg/db"
-	"time"
+	"go-starter/internal/db"
 )
 
 type User struct {
-	ID        int       `gorm:"column:id" json:"id"`
-	Username  string    `gorm:"column:username" json:"username"`
-	CreatedAt time.Time `json:"created_at"`
-	UpdatedAt time.Time `json:"updated_at"`
+	ID       int    `gorm:"column:id" json:"id"`
+	Username string `gorm:"column:username" json:"username"`
+
+	BaseModel
 }
 
 func (User) TableName() string {
