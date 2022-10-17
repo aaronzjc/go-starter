@@ -25,6 +25,10 @@ func SetLevel(l string) {
 	appLogger.logger.SetLevel(level)
 }
 
+func Fatal(args ...interface{}) {
+	appLogger.logger.Fatal(args)
+}
+
 func Info(args ...interface{}) {
 	appLogger.logger.WithFields(logrus.Fields{
 		"log_type": TYPE_COMMON,

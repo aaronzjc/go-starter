@@ -1,5 +1,25 @@
 version: '3'
 
+env:
+  GO111MODULE: "on"
+  CGO_ENABLED: 0
+  GOPROXY: "https://goproxy.cn,direct"
+  protodir: "./internal/pb"
+
 tasks:
-  build:dev:
-    - go build -o ./bin/api.exe ./cmd/api/main.go
+  build_api:
+    desc: "build api server"
+    cmds:
+      - go build -o ./bin/api.exe ./cmd/api/main.go
+  build_grpc:
+    desc: "build grpc server"
+    cmds:
+      - go build -o ./bin/grpc.exe ./cmd/grpc/main.go
+  gen_proto:
+    desc: "gen proto file"
+    cmds:
+      - protoc --go_out=. --go_opt=paths=source_relative $protodir/*.proto
+  gen_grpc:
+    desc: "gen grpc file"
+    cmds:
+      - protoc --go_out=. --go_opt=paths=source_relative --go-grpc_out=. --go-grpc_opt=paths=source_relative $protodir/*.proto

@@ -9,7 +9,7 @@ import (
 	"github.com/urfave/cli"
 )
 
-const appName = "go-starter"
+const appName = "go-starter-grpc"
 
 func main() {
 	app := *cli.NewApp()
@@ -22,8 +22,8 @@ func main() {
 			Usage: "(config) Load configuration from `FILE`",
 		},
 	}
-	app.Before = internal.SetupApi
-	app.Action = internal.RunApi
+	app.Before = internal.SetupGrpc
+	app.Action = internal.RunGrpc
 
 	if err := app.Run(os.Args); err != nil {
 		log.Fatal(err)

@@ -1,0 +1,32 @@
+syntax = "proto3";
+package pb;
+
+option go_package = "./internal/pb";
+
+enum E {
+    E_math = 0;
+    E_eng = 1;
+}
+
+message Hello {
+    int32 test_int = 1;
+    string test_str = 2;
+    E test_enum = 3;
+    repeated string test_arr = 4;
+    repeated Item test_item = 5;
+    map<string, Item> test_map = 6;
+}
+
+message Item {
+    int32 item_int = 1;
+    string item_str = 2;
+}
+
+message GreeterRequest {}
+message GreeterResponse {
+    string hello = 1;
+}
+
+service Greeter {
+    rpc SayHello(GreeterRequest) returns (GreeterResponse) {}
+}
