@@ -1,9 +1,11 @@
-# Binaries for programs and plugins
-*.exe
-*.exe~
-*.dll
-*.so
-*.dylib
+bin/
+coverage.out
 
+# Editor directories and files
+.idea
 .vscode
-.bin
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?

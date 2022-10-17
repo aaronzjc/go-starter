@@ -5,7 +5,6 @@ import (
 	"fmt"
 
 	"github.com/fsnotify/fsnotify"
-	"github.com/sirupsen/logrus"
 	"github.com/spf13/viper"
 )
 
@@ -49,7 +48,6 @@ func LoadConfig(path string) (*Config, error) {
 	vip.SetConfigFile(path)
 	vip.SetConfigType("yml")
 	if err := vip.ReadInConfig(); err != nil {
-		logrus.Error("viper read config err", err)
 		return nil, errors.New("read config file error")
 	}
 	vip.Unmarshal(&config)
