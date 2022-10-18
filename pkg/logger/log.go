@@ -26,19 +26,19 @@ func SetLevel(l string) {
 }
 
 func Fatal(args ...interface{}) {
-	appLogger.logger.Fatal(args)
+	appLogger.logger.Fatal(args...)
 }
 
 func Info(args ...interface{}) {
 	appLogger.logger.WithFields(logrus.Fields{
 		"log_type": TYPE_COMMON,
-	}).Info(args)
+	}).Info(args...)
 }
 
 func Error(args ...interface{}) {
 	appLogger.logger.WithFields(logrus.Fields{
 		"log_type": TYPE_COMMON,
-	}).Error(args)
+	}).Error(args...)
 }
 
 func ErrorWithStack(args ...interface{}) {
@@ -47,7 +47,7 @@ func ErrorWithStack(args ...interface{}) {
 	appLogger.logger.WithFields(logrus.Fields{
 		"log_type": TYPE_COMMON,
 		"stack":    string(stack),
-	}).Error(args)
+	}).Error(args...)
 }
 
 func Request(req *http.Request, resp *http.Response, ts float64, err error) {

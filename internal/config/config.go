@@ -61,6 +61,11 @@ func LoadConfig(path string) (*Config, error) {
 	return &config, nil
 }
 
+func Reset() {
+	vip = viper.New()
+	config = Config{}
+}
+
 func Get() *Config {
 	return &config
 }

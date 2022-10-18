@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"go-starter/internal/config"
+	"go-starter/pkg/logger"
 	"sync"
 
 	"gorm.io/driver/mysql"
@@ -26,7 +27,7 @@ func init() {
 func Setup(conf *config.Config, config *gorm.Config) error {
 	defer func() {
 		if err := recover(); err != nil {
-			fmt.Println(err)
+			logger.Error("setup db panic")
 		}
 	}()
 	var err error
@@ -41,6 +42,7 @@ func Setup(conf *config.Config, config *gorm.Config) error {
 			v.Charset,
 		)
 		if pool.dbMap[dbname], err = gorm.Open(mysql.Open(dsn), config); err != nil {
+			logger.Error("connect db " + dbname + " err")
 			return err
 		}
 	}

@@ -2,7 +2,8 @@ package handler
 
 import (
 	"go-starter/internal/constant"
-	"go-starter/internal/service"
+	"go-starter/internal/service/logic"
+	"go-starter/internal/service/repo"
 
 	"github.com/gin-gonic/gin"
 )
@@ -10,8 +11,12 @@ import (
 type User struct{}
 
 func (h *User) List(ctx *gin.Context) {
-	userList, err := service.GetUserList()
-
+	userRepo, err := repo.NewUserRepoImpl()
+	if err != nil {
+		resp(ctx, &RespData{Errno: constant.ERR_FAILED, ErrMsg: constant.ERR_MSG_USERLIST})
+		return
+	}
+	userList, err := logic.GetUserList(userRepo)
 	if err != nil {
 		resp(ctx, &RespData{Errno: constant.ERR_FAILED, ErrMsg: constant.ERR_MSG_USERLIST})
 		return

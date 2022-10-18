@@ -5,7 +5,6 @@ import (
 )
 
 type User struct {
-	ID       int    `gorm:"column:id" json:"id"`
 	Username string `gorm:"column:username" json:"username"`
 
 	BaseModel
