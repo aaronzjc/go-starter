@@ -1,8 +1,11 @@
 package repo
 
-import "go-starter/internal/domain/model"
+import (
+	"context"
+	"go-starter/internal/domain/model"
+)
 
 // User 用户相关行为
 type UserRepo interface {
-	GetAll() ([]model.User, error)
+	GetAll(context.Context) ([]model.User, error)
 }

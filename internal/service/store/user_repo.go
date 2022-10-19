@@ -1,10 +1,11 @@
-package repo
+package store
 
 import (
+	"context"
 	"errors"
 	"go-starter/internal/db"
 	"go-starter/internal/domain/model"
-	iRepo "go-starter/internal/domain/repo"
+	"go-starter/internal/domain/repo"
 
 	"gorm.io/gorm"
 )
@@ -13,9 +14,9 @@ type UserRepoImpl struct {
 	db *gorm.DB
 }
 
-var _ iRepo.UserRepo = &UserRepoImpl{}
+var _ repo.UserRepo = &UserRepoImpl{}
 
-func (r *UserRepoImpl) GetAll() ([]model.User, error) {
+func (r *UserRepoImpl) GetAll(ctx context.Context) ([]model.User, error) {
 	users := []model.User{}
 	st := r.db.Find(&users)
 	if st.Error != nil {
@@ -25,9 +26,9 @@ func (r *UserRepoImpl) GetAll() ([]model.User, error) {
 }
 
 func NewUserRepoImpl() (*UserRepoImpl, error) {
-	demo, err := db.Get(model.DB_DEMO)
-	if err != nil {
-		return nil, err
+	demo, ok := db.Get(model.DB_DEMO)
+	if !ok {
+		return nil, errors.New("db not connected")
 	}
 	return &UserRepoImpl{
 		db: demo,

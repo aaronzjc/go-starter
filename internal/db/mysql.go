@@ -1,7 +1,6 @@
 package db
 
 import (
-	"errors"
 	"fmt"
 	"go-starter/internal/config"
 	"go-starter/pkg/logger"
@@ -49,10 +48,7 @@ func Setup(conf *config.Config, config *gorm.Config) error {
 	return nil
 }
 
-func Get(dbname string) (*gorm.DB, error) {
+func Get(dbname string) (*gorm.DB, bool) {
 	db, ok := pool.dbMap[dbname]
-	if !ok {
-		return nil, errors.New(dbname + " not found")
-	}
-	return db, nil
+	return db, ok
 }

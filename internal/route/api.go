@@ -1,7 +1,7 @@
 package route
 
 import (
-	"go-starter/internal/handler"
+	"go-starter/internal/handler/web"
 
 	"github.com/gin-gonic/gin"
 )
@@ -9,6 +9,6 @@ import (
 func Setup(app *gin.Engine) {
 	app.Use(gin.Recovery(), gin.Logger())
 
-	user := new(handler.User)
+	user := new(web.User)
 	app.GET("/user/list", user.List)
 }

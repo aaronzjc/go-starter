@@ -1,7 +1,8 @@
-package db
+package test
 
 import (
 	"go-starter/internal/config"
+	"go-starter/internal/db"
 	"testing"
 
 	"github.com/stretchr/testify/require"
@@ -22,16 +23,9 @@ var (
 	}
 )
 
-func TestDb(t *testing.T) {
-	require := require.New(t)
-
-	err := Setup(&conf, &gorm.Config{})
-	require.Nil(err)
-
-	demo, ok := Get("demo")
-	require.True(ok)
-	require.NotEmpty(demo)
-
-	db, _ := demo.DB()
-	require.Nil(db.Ping())
+func SetupTestDb(t *testing.T, dbName string) {
+	_, ok := db.Get(dbName)
+	if !ok {
+		require.Nil(t, db.Setup(&conf, &gorm.Config{}))
+	}
 }
