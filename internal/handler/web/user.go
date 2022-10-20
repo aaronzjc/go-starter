@@ -9,16 +9,20 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-type User struct{}
+type User struct {
+	l logic.UserLogic
+}
+
+func NewUser() *User {
+	repo, _ := store.NewUserRepoImpl()
+	l := logic.NewUserLogic(repo)
+	return &User{
+		l: l,
+	}
+}
 
 func (h *User) List(ctx *gin.Context) {
-	userRepo, err := store.NewUserRepoImpl()
-	if err != nil {
-		Resp(ctx, constant.ERR_FAILED, constant.ERR_MSG_USERLIST, nil)
-		return
-	}
-	userLogic := logic.NewUserLogic(userRepo)
-	userList, err := userLogic.GetUserList(ctx)
+	userList, err := h.l.GetUserList(ctx)
 	if err != nil {
 		Resp(ctx, constant.ERR_FAILED, constant.ERR_MSG_USERLIST, nil)
 		return

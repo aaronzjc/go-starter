@@ -9,6 +9,6 @@ import (
 func Setup(app *gin.Engine) {
 	app.Use(gin.Recovery(), gin.Logger())
 
-	user := new(web.User)
+	user := web.NewUser()
 	app.GET("/user/list", user.List)
 }

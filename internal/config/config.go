@@ -36,11 +36,12 @@ func (c *Config) GetAddr() string {
 
 var (
 	vip    *viper.Viper
-	config Config
+	config *Config
 )
 
 func init() {
 	vip = viper.New()
+	config = &Config{}
 }
 
 func LoadConfig(path string) (*Config, error) {
@@ -58,14 +59,9 @@ func LoadConfig(path string) (*Config, error) {
 	})
 	vip.WatchConfig()
 
-	return &config, nil
-}
-
-func Reset() {
-	vip = viper.New()
-	config = Config{}
+	return config, nil
 }
 
 func Get() *Config {
-	return &config
+	return config
 }

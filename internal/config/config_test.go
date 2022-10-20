@@ -21,12 +21,8 @@ func TestLoadConfig(t *testing.T) {
 	assert.Nil(conf)
 
 	f := setupConfig()
+	defer os.Remove(f)
 	conf, err = LoadConfig(f)
 	assert.Nil(err)
 	assert.Equal(conf.Port, 8780)
-
-	t.Cleanup(func() {
-		os.Remove(f)
-		Reset()
-	})
 }

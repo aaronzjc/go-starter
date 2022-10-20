@@ -7,11 +7,15 @@ import (
 	"go-starter/pkg/helper"
 )
 
-type UserLogic struct {
+type UserLogic interface {
+	GetUserList(context.Context) ([]dto.User, error)
+}
+
+type UserLogicImpl struct {
 	repo repo.UserRepo
 }
 
-func (l *UserLogic) GetUserList(ctx context.Context) ([]dto.User, error) {
+func (l *UserLogicImpl) GetUserList(ctx context.Context) ([]dto.User, error) {
 	var users []dto.User
 	userModels, err := l.repo.GetAll(ctx)
 	if err != nil {
@@ -27,6 +31,6 @@ func (l *UserLogic) GetUserList(ctx context.Context) ([]dto.User, error) {
 	return users, nil
 }
 
-func NewUserLogic(repo repo.UserRepo) *UserLogic {
-	return &UserLogic{repo: repo}
+func NewUserLogic(repo repo.UserRepo) *UserLogicImpl {
+	return &UserLogicImpl{repo: repo}
 }

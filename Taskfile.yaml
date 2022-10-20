@@ -32,7 +32,16 @@ tasks:
     desc: "run unit test"
     cmds:
       - go test -cover -coverprofile=coverage.out ./...
-  mock_repo:
+  mock:
     desc: gen mock files
     cmds:
+      - task mock_repo
+      - task mock_logic
+  mock_repo:
+    desc: gen repo mock files
+    cmds:
       - mockery --dir ./internal/domain/repo --name [a-z]+Repo --output ./internal/mocks --outpkg mocks --case underscore --with-expecter
+  mock_logic:
+    desc: gen logic mock files
+    cmds:
+      - mockery --dir ./internal/service/logic/ --name [a-z]+Logic --output ./internal/mocks --outpkg mocks --case underscore --with-expecter

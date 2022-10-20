@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"go-starter/internal/config"
 	"go-starter/pkg/logger"
-	"sync"
 
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
@@ -12,7 +11,6 @@ import (
 
 type DBPool struct {
 	dbMap map[string]*gorm.DB
-	Once  *sync.Once
 }
 
 var pool *DBPool
