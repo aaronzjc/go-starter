@@ -1,21 +1,21 @@
-package logic
+package service
 
 import (
 	"context"
+	"go-starter/internal/application/dto"
 	"go-starter/internal/domain/repo"
-	"go-starter/internal/service/dto"
 	"go-starter/pkg/helper"
 )
 
-type UserLogic interface {
+type UserService interface {
 	GetUserList(context.Context) ([]dto.User, error)
 }
 
-type UserLogicImpl struct {
+type UserServiceImpl struct {
 	repo repo.UserRepo
 }
 
-func (l *UserLogicImpl) GetUserList(ctx context.Context) ([]dto.User, error) {
+func (l *UserServiceImpl) GetUserList(ctx context.Context) ([]dto.User, error) {
 	var users []dto.User
 	userModels, err := l.repo.GetAll(ctx)
 	if err != nil {
@@ -31,6 +31,6 @@ func (l *UserLogicImpl) GetUserList(ctx context.Context) ([]dto.User, error) {
 	return users, nil
 }
 
-func NewUserLogic(repo repo.UserRepo) *UserLogicImpl {
-	return &UserLogicImpl{repo: repo}
+func NewUserService(repo repo.UserRepo) *UserServiceImpl {
+	return &UserServiceImpl{repo: repo}
 }

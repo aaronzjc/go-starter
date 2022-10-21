@@ -36,12 +36,12 @@ tasks:
     desc: gen mock files
     cmds:
       - task mock_repo
-      - task mock_logic
+      - task mock_service
   mock_repo:
     desc: gen repo mock files
     cmds:
       - mockery --dir ./internal/domain/repo --name [a-z]+Repo --output ./internal/mocks --outpkg mocks --case underscore --with-expecter
-  mock_logic:
-    desc: gen logic mock files
+  mock_service:
+    desc: gen service mock files
     cmds:
-      - mockery --dir ./internal/service/logic/ --name [a-z]+Logic --output ./internal/mocks --outpkg mocks --case underscore --with-expecter
+      - mockery --dir ./internal/application/service/ --name [a-z]+Service --output ./internal/mocks --outpkg mocks --case underscore --with-expecter

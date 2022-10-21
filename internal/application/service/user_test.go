@@ -1,4 +1,4 @@
-package logic
+package service
 
 import (
 	"context"
@@ -16,8 +16,8 @@ func TestUserGetAll(t *testing.T) {
 	userRepo := mocks.NewUserRepo(t)
 	userRepo.EXPECT().GetAll(mock.Anything).Return([]model.User{{BaseModel: model.BaseModel{ID: 1}, Username: "aaron"}}, nil)
 
-	userLogic := NewUserLogic(userRepo)
-	users, _ := userLogic.GetUserList(context.Background())
+	userService := NewUserService(userRepo)
+	users, _ := userService.GetUserList(context.Background())
 	assert.NotEmpty(users)
 	userRepo.AssertExpectations(t)
 }

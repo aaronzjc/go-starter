@@ -1,28 +1,28 @@
 package web
 
 import (
+	"go-starter/internal/application/service"
+	"go-starter/internal/application/store"
 	"go-starter/internal/constant"
 	"go-starter/internal/handler/web/res"
-	"go-starter/internal/service/logic"
-	"go-starter/internal/service/store"
 
 	"github.com/gin-gonic/gin"
 )
 
 type User struct {
-	l logic.UserLogic
+	svc service.UserService
 }
 
 func NewUser() *User {
 	repo, _ := store.NewUserRepoImpl()
-	l := logic.NewUserLogic(repo)
+	svc := service.NewUserService(repo)
 	return &User{
-		l: l,
+		svc: svc,
 	}
 }
 
 func (h *User) List(ctx *gin.Context) {
-	userList, err := h.l.GetUserList(ctx)
+	userList, err := h.svc.GetUserList(ctx)
 	if err != nil {
 		Resp(ctx, constant.ERR_FAILED, constant.ERR_MSG_USERLIST, nil)
 		return

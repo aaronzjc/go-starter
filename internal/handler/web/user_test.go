@@ -1,9 +1,9 @@
 package web
 
 import (
+	"go-starter/internal/application/dto"
 	"go-starter/internal/constant"
 	"go-starter/internal/mocks"
-	"go-starter/internal/service/dto"
 	"go-starter/test"
 	"testing"
 
@@ -12,9 +12,9 @@ import (
 )
 
 func mockUser(t *testing.T) *User {
-	l := mocks.NewUserLogic(t)
-	l.EXPECT().GetUserList(mock.Anything).Return([]dto.User{{ID: 1, Username: "aaron"}}, nil)
-	return &User{l: l}
+	svc := mocks.NewUserService(t)
+	svc.EXPECT().GetUserList(mock.Anything).Return([]dto.User{{ID: 1, Username: "aaron"}}, nil)
+	return &User{svc: svc}
 }
 
 func TestGetUserList(t *testing.T) {
