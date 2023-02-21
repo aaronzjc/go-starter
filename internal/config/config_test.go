@@ -9,7 +9,17 @@ import (
 
 func setupConfig() string {
 	f, _ := os.CreateTemp("", "config")
-	f.WriteString("name: api\nenv: dev\nhost: 127.0.0.1\nport: 8780")
+	f.WriteString(`name: api
+env: dev
+log:
+  level: debug
+  file: "/var/log/go-starter/app.log"
+http:
+  tls: false
+  url: your.domain.here
+  port: 7980
+rpc:
+  port: 7981`)
 	return f.Name()
 }
 
@@ -24,5 +34,5 @@ func TestLoadConfig(t *testing.T) {
 	defer os.Remove(f)
 	conf, err = LoadConfig(f)
 	assert.Nil(err)
-	assert.Equal(conf.Port, 8780)
+	assert.Equal(conf.Http.Port, 7980)
 }

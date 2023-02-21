@@ -1,10 +1,11 @@
 package logger
 
 import (
-	"go-starter/pkg/helper"
 	"net/http"
 	"os"
 	"runtime"
+
+	"go-starter/pkg/helper"
 
 	"github.com/sirupsen/logrus"
 )
@@ -15,14 +16,14 @@ const (
 )
 
 type AppLogger struct {
-	logger *logrus.Logger
+	logger *logrus.Entry
 }
 
 var appLogger *AppLogger
 
 func SetLevel(l string) {
 	level, _ := logrus.ParseLevel(l)
-	appLogger.logger.SetLevel(level)
+	appLogger.logger.Logger.SetLevel(level)
 }
 
 func Fatal(args ...interface{}) {
@@ -30,30 +31,34 @@ func Fatal(args ...interface{}) {
 }
 
 func Info(args ...interface{}) {
-	appLogger.logger.WithFields(logrus.Fields{
-		"log_type": TYPE_COMMON,
-	}).Info(args...)
+	appLogger.logger.Info(args...)
+}
+
+func Debug(args ...interface{}) {
+	appLogger.logger.Debug(args...)
 }
 
 func Error(args ...interface{}) {
-	appLogger.logger.WithFields(logrus.Fields{
-		"log_type": TYPE_COMMON,
-	}).Error(args...)
+	appLogger.logger.Error(args...)
 }
 
 func ErrorWithStack(args ...interface{}) {
 	stack := make([]byte, 2048)
 	stack = stack[:runtime.Stack(stack, true)]
 	appLogger.logger.WithFields(logrus.Fields{
-		"log_type": TYPE_COMMON,
-		"stack":    string(stack),
+		"stack": string(stack),
 	}).Error(args...)
+}
+
+func init() {
+	appLogger = &AppLogger{
+		logger: logrus.NewEntry(logrus.New()),
+	}
 }
 
 func Request(req *http.Request, resp *http.Response, ts float64, err error) {
 	fields := logrus.Fields{
-		"log_type": "request",
-		"consume":  ts,
+		"consume": ts,
 	}
 	if req != nil {
 		fields["req_host"] = req.URL.Host
@@ -71,24 +76,18 @@ func Request(req *http.Request, resp *http.Response, ts float64, err error) {
 	}
 }
 
-func init() {
-	appLogger = &AppLogger{
-		logger: logrus.New(),
-	}
-}
-
 func Setup(appName string, path string) error {
-	appLogger.logger.SetFormatter(&logrus.JSONFormatter{})
-	appLogger.logger.SetOutput(os.Stdout)
-	if path == "" {
-		return nil
+	log := logrus.New()
+	log.SetFormatter(&logrus.JSONFormatter{})
+	log.SetOutput(os.Stdout)
+	if path != "" {
+		if f, err := os.OpenFile(path, os.O_WRONLY|os.O_CREATE|os.O_APPEND, 0755); err != nil {
+			return err
+		} else {
+			log.SetOutput(f)
+		}
 	}
-	f, err := os.OpenFile(path, os.O_WRONLY|os.O_CREATE|os.O_APPEND, 0755)
-	if err != nil {
-		return err
-	}
-	appLogger.logger.SetOutput(f)
-	appLogger.logger.WithFields(logrus.Fields{
+	appLogger.logger = log.WithFields(logrus.Fields{
 		"app_name": appName,
 		"hostname": helper.LocalHostname(),
 		"ip":       helper.LocalAddr(),

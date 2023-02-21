@@ -1,10 +1,9 @@
-package web
+package handler
 
 import (
 	"go-starter/internal/application/service"
 	"go-starter/internal/application/store"
 	"go-starter/internal/constant"
-	"go-starter/internal/handler/web/res"
 
 	"github.com/gin-gonic/gin"
 )
@@ -28,5 +27,5 @@ func (h *User) List(ctx *gin.Context) {
 		return
 	}
 
-	Resp(ctx, constant.ERR_OK, "", res.UserList{List: userList})
+	Resp(ctx, constant.ERR_OK, "", userList)
 }

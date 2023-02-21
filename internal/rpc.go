@@ -4,7 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"go-starter/internal/config"
-	"go-starter/internal/route"
+	"go-starter/internal/rpc"
 	"go-starter/pkg/logger"
 	"net"
 	"os"
@@ -45,15 +45,16 @@ func SetupGrpc(ctx *cli.Context) error {
 func RunGrpc(ctx *cli.Context) error {
 	conf := config.Get()
 
-	ln, err := net.Listen("tcp", conf.GetAddr())
+	addr := fmt.Sprintf(":%d", conf.Rpc.Port)
+	ln, err := net.Listen("tcp", addr)
 	if err != nil {
 		logger.Fatal("listen failed", err)
 	}
 	rpcServer := grpc.NewServer()
-	route.SetupRpc(rpcServer)
+	rpc.SetupRoute(rpcServer)
 
 	go rpcServer.Serve(ln)
-	logger.Info("grpc listen at ", conf.GetAddr())
+	logger.Info("grpc listen at ", addr)
 
 	// 监听关闭信号
 	sig := make(chan os.Signal, 1)

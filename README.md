@@ -9,27 +9,8 @@
 
 ## 使用
 
-安装构建器
-
 ```shell
-# windows平台安装Task构建工具
-go install github.com/go-task/task/v3/cmd/task@latest
-# Linux平台使用原生Make构建工具
-```
-
-开发构建
-
-```shell
-# 构建api服务
-task build:api
-# 构建grpc服务
-task build:grpc
-# 生成grpc相关文件
-task gen:grpc
-```
-
-运行
-```
-./bin/api.exe -c ./conf/dev.yml
-./bin/grpc.exe -c ./conf/dev.yml
+$git clone https://github.com/aaronzjc/go-starter.git
+$cd go-starter && go mod tidy
+$mage 
 ```

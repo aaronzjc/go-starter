@@ -1,14 +1,11 @@
 name: api
 env: dev
-host: 127.0.0.1
-port: 8780
 log:
   level: debug
-  file: ""
-database:
-  demo:
-    host: "127.0.0.1"
-    port: 3306
-    username: "root" 
-    password: "123456"
-    charset: "utf8"
+  file: "/var/log/go-starter/app.log"
+http:
+  tls: false
+  url: your.domain.here
+  port: 7980
+rpc:
+  port: 7981

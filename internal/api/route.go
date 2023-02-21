@@ -1,14 +1,14 @@
-package route
+package api
 
 import (
-	"go-starter/internal/handler/web"
+	"go-starter/internal/api/handler"
 
 	"github.com/gin-gonic/gin"
 )
 
-func Setup(app *gin.Engine) {
+func SetupRoute(app *gin.Engine) {
 	app.Use(gin.Recovery(), gin.Logger())
 
-	user := web.NewUser()
+	user := handler.NewUser()
 	app.GET("/user/list", user.List)
 }

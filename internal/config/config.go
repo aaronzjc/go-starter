@@ -2,7 +2,6 @@ package config
 
 import (
 	"errors"
-	"fmt"
 
 	"github.com/fsnotify/fsnotify"
 	"github.com/spf13/viper"
@@ -13,6 +12,18 @@ type LogConfig struct {
 	File  string `yaml:"file"`
 }
 
+type HttpConfig struct {
+	Tls  bool   `yaml:"tls"`
+	Url  string `yaml:"url"`
+	Port int    `yaml:"port"`
+}
+
+type RedisConfig struct {
+	Host     string `yaml:"host"`
+	Port     int    `yaml:"port"`
+	Password string `yaml:"password"`
+}
+
 type DbConfig struct {
 	Host     string `yaml:"host"`
 	Port     int    `yaml:"port"`
@@ -21,17 +32,18 @@ type DbConfig struct {
 	Charset  string `yaml:"charset"`
 }
 
+type RpcConfig struct {
+	Port int `yaml:"port"`
+}
+
 type Config struct {
 	Name     string              `yaml:"name"`
 	Env      string              `yaml:"env"`
-	Log      LogConfig           `yaml:"logFile"`
-	Host     string              `yaml:"host"`
-	Port     int                 `yaml:"port"`
+	Log      LogConfig           `yaml:"log"`
+	Http     HttpConfig          `yaml:"http"`
+	Rpc      RpcConfig           `yaml:"rpc"`
+	Redis    RedisConfig         `yaml:"redis"`
 	Database map[string]DbConfig `yaml:"database"`
-}
-
-func (c *Config) GetAddr() string {
-	return fmt.Sprintf("%s:%d", config.Host, config.Port)
 }
 
 var (

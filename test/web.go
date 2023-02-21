@@ -2,7 +2,6 @@ package test
 
 import (
 	"encoding/json"
-	"go-starter/internal/handler/web/res"
 	"net/http"
 	"net/http/httptest"
 	"testing"
@@ -60,11 +59,15 @@ func (r *Response) Body() string {
 }
 
 func (r *Response) TryDecode() (errno int, errmsg string, data any, err error) {
-	var dataSt res.RespSt
+	var dataSt struct {
+		Code int         `json:"code"`
+		Msg  string      `json:"msg"`
+		Data interface{} `json:"data"`
+	}
 	err = json.Unmarshal([]byte(r.Body()), &dataSt)
 	if err != nil {
 		return
 	}
-	errno, errmsg, data = dataSt.Errno, dataSt.ErrMsg, dataSt.Data
+	errno, errmsg, data = dataSt.Code, dataSt.Msg, dataSt.Data
 	return
 }

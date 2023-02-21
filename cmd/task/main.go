@@ -1,31 +1,38 @@
 package main
 
 import (
-	"log"
+	"go-starter/internal"
 	"os"
 
-	"go-starter/internal"
-
+	"github.com/sirupsen/logrus"
 	"github.com/urfave/cli"
 )
 
-const appName = "go-starter-grpc"
+var (
+	appName = "go-starter-cron"
+	usage   = "run cron"
+	desc    = "cron demo"
+	version = "0.1"
+)
 
 func main() {
 	app := *cli.NewApp()
 	app.Name = appName
-	app.Usage = "run " + appName + " server"
-	app.Description = "run " + appName + " server"
+	app.Usage = usage
+	app.Description = desc
+	app.Version = version
+
 	app.Flags = []cli.Flag{
 		&cli.StringFlag{
 			Name:  "config,c",
 			Usage: "(config) Load configuration from `FILE`",
 		},
 	}
-	app.Before = internal.SetupGrpc
-	app.Action = internal.RunGrpc
+
+	app.Before = internal.SetupCli
+	app.Commands = internal.RegistCmds()
 
 	if err := app.Run(os.Args); err != nil {
-		log.Fatal(err)
+		logrus.Fatal(err)
 	}
 }

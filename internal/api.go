@@ -4,9 +4,8 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"go-starter/internal/api"
 	"go-starter/internal/config"
-	"go-starter/internal/db"
-	"go-starter/internal/route"
 	"go-starter/pkg/logger"
 	"net/http"
 	"os"
@@ -16,7 +15,6 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/urfave/cli"
-	"gorm.io/gorm"
 )
 
 func SetupApi(ctx *cli.Context) error {
@@ -39,11 +37,6 @@ func SetupApi(ctx *cli.Context) error {
 	if err != nil {
 		return err
 	}
-	// 初始化DB等
-	err = db.Setup(conf, &gorm.Config{})
-	if err != nil {
-		return err
-	}
 	// 设置调试模式
 	if conf.Env != "prod" {
 		logger.SetLevel(conf.Log.Level)
@@ -56,15 +49,16 @@ func RunApi(ctx *cli.Context) error {
 	conf := config.Get()
 	// 启动服务器
 	app := gin.New()
-	route.Setup(app)
+	api.SetupRoute(app)
+	addr := fmt.Sprintf(":%d", conf.Http.Port)
 	server := &http.Server{
-		Addr:         conf.GetAddr(),
+		Addr:         addr,
 		Handler:      app,
 		ReadTimeout:  time.Second * 5,
 		WriteTimeout: time.Second * 10,
 	}
 	go server.ListenAndServe()
-	logger.Info("[START] server listen at ", conf.GetAddr())
+	logger.Info("[START] server listen at ", addr)
 
 	// 监听关闭信号
 	sig := make(chan os.Signal, 1)

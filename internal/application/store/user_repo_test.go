@@ -2,8 +2,6 @@ package store
 
 import (
 	"context"
-	"go-starter/internal/domain/model"
-	"go-starter/test"
 	"testing"
 
 	"github.com/stretchr/testify/require"
@@ -11,8 +9,6 @@ import (
 
 func TestUserGetAll(t *testing.T) {
 	require := require.New(t)
-
-	test.SetupTestDb(t, model.DB_DEMO)
 
 	repo, err := NewUserRepoImpl()
 	require.Nil(err)
